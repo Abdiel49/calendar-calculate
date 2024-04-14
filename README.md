@@ -50,7 +50,7 @@ Retrieves dates within a specified range that fall on specific weekdays.
 - Returns an array of Date objects representing the dates that fall within the specified range and match the specified weekdays.
 
 # License
-This library is licensed under the MIT License. See the LICENSE file for details.
+This library is licensed under the MIT License. See the [LICENSE](./LICENCE.md) file for details.
 
 
 
