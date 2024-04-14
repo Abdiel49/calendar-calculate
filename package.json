@@ -4,6 +4,11 @@
   "description": "A simple function retrieves dates within a specified range that fall on specific weekdays.",
   "type": "module",
   "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Abdiel49/calendar-calculate"
+  },
+  "homepage": "https://github.com/Abdiel49/calendar-calculate#readme",
   "scripts": {
     "build-node": "tsc src/index.ts --outDir dist-node --isolatedModules",
     "build-browser": "tsc src/index.ts --outDir dist-browser --module ES6 --isolatedModules",
