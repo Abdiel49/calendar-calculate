@@ -1,0 +1,1 @@
+export type WeekdaysType = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';

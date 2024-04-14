@@ -1,0 +1,21 @@
+{
+  "name": "calendar-calculate",
+  "version": "1.0.1",
+  "description": "A simple function retrieves dates within a specified range that fall on specific weekdays.",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build-node": "tsc src/index.ts --outDir dist-node --isolatedModules",
+    "build-browser": "tsc src/index.ts --outDir dist-browser --module ES6 --isolatedModules",
+    "build": "tsc",
+    "start:dev": "tsc src/index.ts --watch",
+    "start": "npm run build & node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Abdiel49",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
