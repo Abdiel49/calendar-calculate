@@ -9,6 +9,7 @@
     "url": "https://github.com/Abdiel49/calendar-calculate"
   },
   "homepage": "https://github.com/Abdiel49/calendar-calculate#readme",
+  "bugs": "https://github.com/Abdiel49/calendar-calculate/issues",
   "scripts": {
     "build-node": "tsc src/index.ts --outDir dist-node --isolatedModules",
     "build-browser": "tsc src/index.ts --outDir dist-browser --module ES6 --isolatedModules",
@@ -17,9 +18,9 @@
     "start": "npm run build & node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": ["calendar", "calculate", "date", "dates"],
   "author": "Abdiel49",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "typescript": "^5.4.5"
   }
