@@ -1,0 +1,48 @@
+name: PR Validation → develop
+
+on:
+  pull_request:
+    branches: [develop]
+
+concurrency:
+  group: pr-develop-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── 1a. Type-check + Build (run together — both are fast and share no output) ──
+  validate:
+    name: Type Check & Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+
+      - run: npm ci --prefer-offline
+      - run: npx tsc --noEmit
+      - run: npm run build
+
+  # ── 1b. Tests (runs in parallel with validate) ────────────────────────────
+  test:
+    name: Unit & E2E Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+
+      - run: npm ci --prefer-offline
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: E2E tests
+        run: npm run test:e2e

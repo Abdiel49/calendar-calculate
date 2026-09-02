@@ -1,0 +1,97 @@
+name: PR Validation → main
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: pr-main-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── 1. Type-check ─────────────────────────────────────────────────────────
+  type-check:
+    name: TypeScript Type Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+
+      - run: npm ci --prefer-offline
+      - run: npx tsc --noEmit
+
+  # ── 2. Build ──────────────────────────────────────────────────────────────
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+
+      - run: npm ci --prefer-offline
+      - run: npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  # ── 3. Tests (matrix across supported Node versions) ──────────────────────
+  test:
+    name: Tests — Node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false          # show failures for all Node versions, not just the first
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - run: npm ci --prefer-offline
+
+      # Unit and e2e run sequentially inside each matrix leg (ts-jest, no build needed)
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: E2E tests
+        run: npm run test:e2e
+
+  # ── 4. Coverage (once, after all tests pass) ───────────────────────────────
+  coverage:
+    name: Coverage Report
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [type-check, test]   # only run if type-check AND all matrix legs pass
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+
+      - run: npm ci --prefer-offline
+      - run: npm run test:coverage
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
